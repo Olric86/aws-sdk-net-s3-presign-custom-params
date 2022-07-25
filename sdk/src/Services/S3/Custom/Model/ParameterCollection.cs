@@ -35,9 +35,11 @@ namespace Amazon.S3.Model {
     /// <returns>The value for the meta data</returns>
     public string this[string name] {
       get {
-        if (!name.StartsWith("x-", StringComparison.OrdinalIgnoreCase))
+        if (this.ForceXKeys == true)
+        {
+          if (!name.StartsWith("x-", StringComparison.OrdinalIgnoreCase))
           name = "x-" + name;
-
+        }
         string value;
         if (values.TryGetValue(name, out value))
           return value;
@@ -45,9 +47,11 @@ namespace Amazon.S3.Model {
         return null;
       }
       set {
-        if (!name.StartsWith("x-", StringComparison.OrdinalIgnoreCase))
-          name = "x-" + name;
-
+        if (this.ForceXKeys == true)
+        {
+          if (!name.StartsWith("x-", StringComparison.OrdinalIgnoreCase))
+            name = "x-" + name;
+        }
         values[name] = value;
       }
     }
@@ -74,5 +78,9 @@ namespace Amazon.S3.Model {
     public ICollection<string> Keys {
       get { return values.Keys; }
     }
+    /// <summary>
+    /// Enable/Disable forced 'x-' addition to parameter keys
+    /// </summary>
+    public bool ForceXKeys { get; set; } = true;
   }
 }
